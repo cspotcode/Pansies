@@ -40,7 +40,7 @@ $InformationPreference = "Continue"
 $ErrorView = 'DetailedView'
 
 # The name of the module to publish
-$script:PSModuleName = "TerminalBlocks"
+$script:PSModuleName = "Pansies"
 # Use Env because Earthly can override it
 $Env:OUTPUT_ROOT ??= Join-Path $BuildRoot Modules
 

@@ -6,6 +6,13 @@ using namespace ColorMine.ColorSpaces
 using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
 
+$bench = {
+    param($name, $block)
+    # write-host $name (measure-command $block).totalmilliseconds
+    . $block
+}
+
+. $bench A {
 # On first import, if HostPreference doesn't exist, set it and strongly type it
 if (!(Test-Path Variable:HostPreference) -or $null -eq $HostPreference) {
     [System.Management.Automation.ActionPreference]$global:HostPreference = "Continue"
@@ -13,41 +20,34 @@ if (!(Test-Path Variable:HostPreference) -or $null -eq $HostPreference) {
 
 Set-Variable HostPreference -Description "Dictates the action taken when a host message is delivered" -Visibility Public -Scope Global
 
+}
+. $bench B {
 if(-not $IsLinux -and -not $IsMacOS) {
     [PoshCode.Pansies.NativeMethods]::EnableVirtualTerminalProcessing()
 }
-
+}
+. $bench B2 {
 if(Get-Command Add-MetadataConverter -ErrorAction Ignore) {
     Add-MetadataConverter @{
         RgbColor = { [PoshCode.Pansies.RgbColor]$args[0] }
         [PoshCode.Pansies.RgbColor] = { "RgbColor '$_'" }
     }
 }
-
+}
+. $bench B3 {
 $Accelerators = @{
     "RGBColor" = [PoshCode.Pansies.RgbColor]
     "Entities" = [PoshCode.Pansies.Entities]
 }
-
+}
+. $bench C {
 # IArgumentCompleterFactory only available on PS7+
 if ("System.Management.Automation.IArgumentCompleterFactory" -as [type]) {
-    Add-Type @"
-using System.Management.Automation;
-using PoshCode.Pansies.Palettes;
-namespace PoshCode.Pansies {
-    public class ColorCompleterAttribute : ArgumentCompleterAttribute, IArgumentCompleterFactory {
-        public ColorCompleterAttribute(){}
-        public IArgumentCompleter Create() {
-            return new X11Palette();
-        }
-    }
+    Import-Module "$PSScriptRoot\..\lib\Pansies.Completion.dll"
+    $Accelerators["ColorCompleterAttribute"] = [PoshCode.Pansies.Completion.ColorCompleterAttribute]
 }
-"@ -ReferencedAssemblies ([psobject].Assembly), ([PoshCode.Pansies.RgbColor].Assembly), "netstandard" -CompilerOptions "-NoWarn:1701"
-
-    $Accelerators["ColorCompleterAttribute"] = [PoshCode.Pansies.ColorCompleterAttribute]
-
 }
-
+. $bench D {
 $xlr8r = [psobject].assembly.gettype("System.Management.Automation.TypeAccelerators")
 $Accelerators.GetEnumerator().ForEach({
     $Name = $_.Key
@@ -86,3 +86,4 @@ $global:PansiesColorCompleterRegistration = Register-EngineEvent -SourceIdentifi
 }
 
 Export-ModuleMember -Variable RgbColorCompleter -Function *-* -Cmdlet * -Alias *
+}

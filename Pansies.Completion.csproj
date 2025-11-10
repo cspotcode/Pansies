@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>PoshCode.Pansies.Completion</RootNamespace>
+    <DebugType>embedded</DebugType>
+    <!-- Only include the Completion folder -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Include only the Completion folder files -->
+    <Compile Include="Source\Assembly\Completion\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- System.Management.Automation 7.2.0+ contains IArgumentCompleterFactory -->
+    <PackageReference Include="System.Management.Automation" Version="7.2.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Pansies.csproj" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

@@ -18,10 +18,16 @@ if (!$SemVer -and (Get-Command gitversion -ErrorAction Ignore)) {
 
 try {
     if (!$SkipBinaryBuild) {
-        Write-Host "## Compiling Pansies binary module" -ForegroundColor Cyan
-        # dotnet restore
-        # dotnet build -c $Configuration -o "$($folder)\lib" | Write-Host -ForegroundColor DarkGray
-        dotnet publish -c $Configuration -o "$($Folder)/lib" | Write-Host -ForegroundColor DarkGray
+        Write-Host "## Compiling Pansies binary modules" -ForegroundColor Cyan
+
+        # Pansies.dll
+        # dotnet restore Pansies.csproj
+        dotnet publish Pansies.csproj -c $Configuration -o "$($Folder)/lib" | Write-Host -ForegroundColor DarkGray
+
+        # Pansies.Completion.dll (PS7+ only features)
+        # dotnet restore Pansies.Completion.csproj
+        dotnet publish Pansies.Completion.csproj -c $Configuration -o "$($Folder)/lib" | Write-Host -ForegroundColor DarkGray
+
         # We don't need to ship any of the System DLLs because they're all in PowerShell
         Get-ChildItem $Folder -Filter System.* -Recurse | Remove-Item
     }

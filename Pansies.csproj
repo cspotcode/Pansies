@@ -38,6 +38,8 @@
     <Compile Remove="lib\**" />
     <Compile Remove="output\**" />
     <Compile Remove="assemblies\**" />
+    <!-- Exclude Completion folder - it's built in Pansies.Completion.csproj -->
+    <Compile Remove="Source\Assembly\Completion\**" />
     <!-- My output folders start with numbers. Make sure we don't "build" them -->
     <Compile Remove="0*\**;1*\**;2*\**;3*\**;4*\**;5*\**;6*\**;7*\**;8*\**;9*\**" />
     <EmbeddedResource Remove="0*\**;1*\**;2*\**;3*\**;4*\**;5*\**;6*\**;7*\**;8*\**;9*\**" />

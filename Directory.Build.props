@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Use separate obj directories for root-level projects only -->
+    <BaseIntermediateOutputPath Condition="'$(MSBuildProjectName)' == 'Pansies' Or '$(MSBuildProjectName)' == 'Pansies.Completion'">obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>
